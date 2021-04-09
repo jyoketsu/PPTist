@@ -28,7 +28,6 @@
         <div class="menu-item"><IconHelpcenter /> <span class="text">帮助</span></div>
         <template #overlay>
           <Menu>
-            <MenuItem @click="openDoc()">开发文档</MenuItem>
             <MenuItem @click="hotkeyDrawerVisible = true">快捷键</MenuItem>
           </Menu>
         </template>
@@ -41,9 +40,10 @@
           <IconPpt size="18" fill="#666" style="margin-top: 2px;" />
         </div>
       </Tooltip>
-      <a href="https://github.com/pipipi-pikachu/PPTist" target="_blank">
+      <!-- <a href="https://github.com/pipipi-pikachu/PPTist" target="_blank">
         <div class="menu-item"><IconGithub size="18" fill="#666" /></div>
-      </a>
+      </a> -->
+      <div class="menu-item" @click="saveDoc()"><IconSave /> <span class="text">保存</span></div>
     </div>
 
     <Drawer
@@ -70,13 +70,12 @@
 
 <script lang="ts">
 import { computed, defineAsyncComponent, defineComponent, ref } from 'vue'
-import { MutationTypes, useStore } from '@/store'
+import { ActionTypes, MutationTypes, useStore } from '@/store'
 import useScreening from '@/hooks/useScreening'
 import useSlideHandler from '@/hooks/useSlideHandler'
 import useHistorySnapshot from '@/hooks/useHistorySnapshot'
 
 import HotkeyDoc from './HotkeyDoc.vue'
-import { message } from 'ant-design-vue'
 
 export default defineComponent({
   name: 'editor-header',
@@ -96,8 +95,9 @@ export default defineComponent({
       store.commit(MutationTypes.SET_GRID_LINES_STATE, !showGridLines.value)
     }
 
-    const openDoc = () => {
-      message.warning('作者努力编写中...')
+    const saveDoc = () => {
+      const slides = computed(() => store.state.slides)
+      store.dispatch(ActionTypes.SAVE_DOC, {detail: slides.value})
     }
 
     const hotkeyDrawerVisible = ref(false)
@@ -113,9 +113,9 @@ export default defineComponent({
       toggleGridLines,
       showGridLines,
       resetSlides,
-      openDoc,
       hotkeyDrawerVisible,
       exportDialogVisible,
+      saveDoc
     }
   },
 })

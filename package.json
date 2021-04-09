@@ -6,12 +6,15 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "scp": "scp -r dist/* root@132.232.47.47:/home/work/websites/ppt.mindcute.com",
+    "deploy": "npm run build && npm run scp"
   },
   "dependencies": {
     "@icon-park/vue-next": "^1.2.6",
     "animate.css": "^4.1.1",
     "ant-design-vue": "^2.0.0",
+    "axios": "^0.21.1",
     "chartist": "^0.11.4",
     "clipboard": "^2.0.6",
     "core-js": "^3.6.5",

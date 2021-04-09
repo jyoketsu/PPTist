@@ -6,6 +6,7 @@ import { Slide, PPTElement, SlideTheme } from '@/types/slides'
 import { CreatingElement } from '@/types/edit'
 import { SYS_FONTS } from '@/configs/font'
 import { isSupportFontFamily } from '@/utils/fontFamily'
+import api from '../api'
 
 interface RemoveElementPropData {
   id: string;
@@ -178,4 +179,11 @@ export const mutations: MutationTree<State> = {
   [MutationTypes.SET_SCREENING](state, screening) {
     state.screening = screening
   },
+
+  // api
+  [MutationTypes.SET_API](state, params) {
+    state.getDataApi = params.getDataApi
+    state.patchDataApi = params.patchDataApi
+    api.setToken(params.token)
+  }
 }

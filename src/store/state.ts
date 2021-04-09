@@ -4,6 +4,11 @@ import { ToolbarState } from '@/types/toolbar'
 import { slides } from '@/mocks/index'
 import { SYS_FONTS } from '@/configs/font'
 
+interface Api{
+  url: string;
+  params: object;
+}
+
 export interface State {
   activeElementIdList: string[];
   handleElementId: string;
@@ -27,6 +32,8 @@ export interface State {
   shiftKeyState: boolean;
   screening: boolean;
   clipingImageElementId: string;
+  getDataApi: Api|null;
+  patchDataApi: Api|null; 
 }
 
 export const state: State = {
@@ -57,4 +64,6 @@ export const state: State = {
   shiftKeyState: false,
   screening: false,
   clipingImageElementId: '',
+  getDataApi: null,
+  patchDataApi: null,
 }

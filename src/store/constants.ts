@@ -37,6 +37,9 @@ export const enum MutationTypes {
 
   // screen
   SET_SCREENING = 'setScreening',
+
+  // api
+  SET_API = 'setApi',
 }
 
 export const enum ActionTypes {
@@ -44,4 +47,6 @@ export const enum ActionTypes {
   ADD_SNAPSHOT = 'addSnapshot',
   UN_DO = 'undo',
   RE_DO = 'redo',
+  GET_DOC = 'getDoc',
+  SAVE_DOC = 'saveDoc'
 }

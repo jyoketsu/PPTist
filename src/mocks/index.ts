@@ -49,7 +49,7 @@ export const slides: Slide[] = [
         top: 253.25,
         width: 585,
         height: 56,
-        content: '<p style=\'\'><span style=\'font-size:  24px\'>基于 Vue 3.x + TypeScript 的在线演示文稿应用</span></p>',
+        content: '<p style=\'\'><span style=\'font-size:  24px\'>欢迎使用时光在线演示文稿应用</span></p>',
       },
       {
         type: 'line',

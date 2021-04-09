@@ -3,6 +3,8 @@ import { IndexableTypeArray } from 'dexie'
 import { State } from './state'
 import { ActionTypes, MutationTypes } from './constants'
 import { snapshotDB, Snapshot } from '@/utils/database'
+import { message } from 'ant-design-vue'
+import api from '../api'
 
 export const actions: ActionTree<State, State> = {
   async [ActionTypes.INIT_SNAPSHOT_DATABASE]({ commit, state }) {
@@ -83,5 +85,30 @@ export const actions: ActionTree<State, State> = {
     commit(MutationTypes.UPDATE_SLIDE_INDEX, slideIndex)
     commit(MutationTypes.SET_SNAPSHOT_CURSOR, snapshotCursor)
     commit(MutationTypes.SET_ACTIVE_ELEMENT_ID_LIST, [])
+  },
+  async [ActionTypes.GET_DOC]({ commit, state }) {
+    if (state.getDataApi) {
+      const res: any = await api.request.get(state.getDataApi.url, state.getDataApi.params)
+      if (res.status === 200) {
+        const slides = res.data.detail
+        if (slides && slides instanceof Array && slides.length) {
+          commit(MutationTypes.SET_SLIDES, slides)
+        }
+      }
+      else {
+        message.warning(res.msg)
+      }
+    }
+  },
+  async [ActionTypes.SAVE_DOC]({ state }, params) {
+    if (state.patchDataApi) {
+      const res: any = await api.request.patch(state.patchDataApi.url, {...state.patchDataApi.params, ...params})
+      if (res.status === 200) {
+        message.warning('保存成功')
+      }
+      else {
+        message.warning(res.msg)
+      }
+    }
   },
 }
