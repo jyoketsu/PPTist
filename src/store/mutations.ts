@@ -184,6 +184,7 @@ export const mutations: MutationTree<State> = {
   [MutationTypes.SET_API](state, params) {
     state.getDataApi = params.getDataApi
     state.patchDataApi = params.patchDataApi
+    state.getUptokenApi = params.getUptokenApi
     api.setToken(params.token)
   }
 }

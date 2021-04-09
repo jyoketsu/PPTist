@@ -97,7 +97,7 @@ export default defineComponent({
 
     const saveDoc = () => {
       const slides = computed(() => store.state.slides)
-      store.dispatch(ActionTypes.SAVE_DOC, {detail: slides.value})
+      store.dispatch(ActionTypes.SAVE_DOC, slides.value)
     }
 
     const hotkeyDrawerVisible = ref(false)

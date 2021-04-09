@@ -7,6 +7,7 @@ import { SYS_FONTS } from '@/configs/font'
 interface Api{
   url: string;
   params: object;
+  docDataName?: string;
 }
 
 export interface State {
@@ -34,6 +35,7 @@ export interface State {
   clipingImageElementId: string;
   getDataApi: Api|null;
   patchDataApi: Api|null; 
+  getUptokenApi: Api|null;
 }
 
 export const state: State = {
@@ -66,4 +68,5 @@ export const state: State = {
   clipingImageElementId: '',
   getDataApi: null,
   patchDataApi: null,
+  getUptokenApi: null
 }

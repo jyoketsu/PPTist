@@ -69,7 +69,7 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from 'vue'
 import { MutationTypes, useStore } from '@/store'
-import { getImageDataURL } from '@/utils/image'
+// import { getImageDataURL } from '@/utils/image'
 import { ShapePoolItem } from '@/configs/shapes'
 import { LinePoolItem } from '@/configs/lines'
 import useScaleCanvas from '@/hooks/useScaleCanvas'
@@ -80,6 +80,10 @@ import ShapePool from './ShapePool.vue'
 import LinePool from './LinePool.vue'
 import ChartPool from './ChartPool.vue'
 import TableGenerator from './TableGenerator.vue'
+
+import qiniuUpload from '@/utils/qiniu'
+import api from '@/api'
+import { message } from 'ant-design-vue'
 
 export default defineComponent({
   name: 'canvas-tool',
@@ -96,16 +100,29 @@ export default defineComponent({
     const canRedo = computed(() => store.getters.canRedo)
 
     const canvasScalePercentage = computed(() => parseInt(canvasScale.value * 100 + '') + '%')
+    const getUptokenApi = computed(() => store.state.getUptokenApi)
 
     const { scaleCanvas, setCanvasPercentage } = useScaleCanvas()
     const { redo, undo } = useHistorySnapshot()
 
     const { createImageElement, createChartElement, createTableElement } = useCreateElement()
 
-    const insertImageElement = (files: File[]) => {
+    const insertImageElement = async (files: File[]) => {
       const imageFile = files[0]
       if (!imageFile) return
-      getImageDataURL(imageFile).then(dataURL => createImageElement(dataURL))
+      if (getUptokenApi.value) {
+        // eslint-disable-next-line
+        const res: any = await api.request.get(getUptokenApi.value.url, {...getUptokenApi.value.params, ...{token: api.getToken()}})
+        if (res.statusCode === '200') {
+          const upToken = res.result
+          qiniuUpload(upToken, imageFile, function(url: string) {
+            createImageElement(url)
+          })
+        }
+        else {
+          message.warn('获取上传token失败！')
+        }
+      }
     }
 
     const shapePoolVisible = ref(false)

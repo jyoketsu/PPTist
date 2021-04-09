@@ -32,14 +32,17 @@ export default defineComponent({
       const QUERY_PARAMS = new URLSearchParams(window.location.search)
       const getDataApiQuery = QUERY_PARAMS.get('getDataApi')
       const patchDataApiQuery = QUERY_PARAMS.get('patchDataApi')
+      const getUptokenApiQuery = QUERY_PARAMS.get('getUptokenApi')
       const token = QUERY_PARAMS.get('token') 
       
-      if (getDataApiQuery && patchDataApiQuery) {
+      if (getDataApiQuery && patchDataApiQuery && getUptokenApiQuery) {
         const getDataApi = JSON.parse(decodeURIComponent(getDataApiQuery))
         const patchDataApi = JSON.parse(decodeURIComponent(patchDataApiQuery))
+        const getUptokenApi = JSON.parse(decodeURIComponent(getUptokenApiQuery))
         store.commit(MutationTypes.SET_API, {
           getDataApi,
           patchDataApi,
+          getUptokenApi, 
           token 
         })
       }

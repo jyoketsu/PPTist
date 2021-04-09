@@ -90,4 +90,7 @@ export default {
   setToken: (_token: string) => {
     token = _token
   },
+  getToken: () => {
+    return token
+  }
 }
