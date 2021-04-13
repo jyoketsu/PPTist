@@ -40,7 +40,7 @@ export const slides: Slide[] = [
         top: 65.25,
         width: 585,
         height: 188,
-        content: '<p style=\'\'><strong><span style=\'font-size:  112px\'>PPTIST</span></strong></p>',
+        content: '<p style=\'\'><strong><span style=\'font-size:  112px\'>时光PPT</span></strong></p>',
       },
       {
         type: 'text',
