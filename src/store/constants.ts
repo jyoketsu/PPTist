@@ -40,6 +40,8 @@ export const enum MutationTypes {
 
   // api
   SET_API = 'setApi',
+  
+  SET_LOADING = 'setLoading',
 }
 
 export const enum ActionTypes {
@@ -48,5 +50,5 @@ export const enum ActionTypes {
   UN_DO = 'undo',
   RE_DO = 'redo',
   GET_DOC = 'getDoc',
-  SAVE_DOC = 'saveDoc'
+  SAVE_DOC = 'saveDoc',
 }

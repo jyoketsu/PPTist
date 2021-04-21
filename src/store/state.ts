@@ -36,6 +36,7 @@ export interface State {
   getDataApi: Api|null;
   patchDataApi: Api|null; 
   getUptokenApi: Api|null;
+  loading: boolean;
 }
 
 export const state: State = {
@@ -68,5 +69,6 @@ export const state: State = {
   clipingImageElementId: '',
   getDataApi: null,
   patchDataApi: null,
-  getUptokenApi: null
+  getUptokenApi: null,
+  loading: false,
 }

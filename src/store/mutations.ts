@@ -85,6 +85,7 @@ export const mutations: MutationTree<State> = {
 
   [MutationTypes.SET_SLIDES](state, slides: Slide[]) {
     state.slides = slides
+    state.loading = false
   },
 
   [MutationTypes.ADD_SLIDE](state, slide: Slide | Slide[]) {
@@ -186,5 +187,9 @@ export const mutations: MutationTree<State> = {
     state.patchDataApi = params.patchDataApi
     state.getUptokenApi = params.getUptokenApi
     api.setToken(params.token)
-  }
+  },
+
+  [MutationTypes.SET_LOADING](state, loading) {
+    state.loading = loading
+  },
 }

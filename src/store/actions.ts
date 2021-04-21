@@ -88,6 +88,7 @@ export const actions: ActionTree<State, State> = {
   },
   async [ActionTypes.GET_DOC]({ commit, state }) {
     if (state.getDataApi) {
+      commit(MutationTypes.SET_LOADING, true)
       // eslint-disable-next-line
       const res: any = await api.request.get(state.getDataApi.url, state.getDataApi.params)
       if (res.status === 200) {
@@ -101,13 +102,15 @@ export const actions: ActionTree<State, State> = {
       }
     }
   },
-  async [ActionTypes.SAVE_DOC]({ state }, slides) {
+  async [ActionTypes.SAVE_DOC]({ commit, state }, slides) {
     if (state.patchDataApi && state.patchDataApi.docDataName) {
       const dataParam = {}
       dataParam[state.patchDataApi.docDataName] = slides
+      commit(MutationTypes.SET_LOADING, true)
       // eslint-disable-next-line
       const res: any = await api.request.patch(state.patchDataApi.url, {...state.patchDataApi.params, ...dataParam})
       if (res.status === 200) {
+        commit(MutationTypes.SET_LOADING, false)
         message.warning('保存成功')
       }
       else {
