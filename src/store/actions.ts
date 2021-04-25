@@ -91,6 +91,7 @@ export const actions: ActionTree<State, State> = {
       commit(MutationTypes.SET_LOADING, true)
       // eslint-disable-next-line
       const res: any = await api.request.get(state.getDataApi.url, state.getDataApi.params)
+      commit(MutationTypes.SET_LOADING, false)
       if (res.status === 200) {
         const slides = res.data.detail
         if (slides && slides instanceof Array && slides.length) {
@@ -109,8 +110,8 @@ export const actions: ActionTree<State, State> = {
       commit(MutationTypes.SET_LOADING, true)
       // eslint-disable-next-line
       const res: any = await api.request.patch(state.patchDataApi.url, {...state.patchDataApi.params, ...dataParam})
+      commit(MutationTypes.SET_LOADING, false)
       if (res.status === 200) {
-        commit(MutationTypes.SET_LOADING, false)
         message.warning('保存成功')
       }
       else {

@@ -85,7 +85,6 @@ export const mutations: MutationTree<State> = {
 
   [MutationTypes.SET_SLIDES](state, slides: Slide[]) {
     state.slides = slides
-    state.loading = false
   },
 
   [MutationTypes.ADD_SLIDE](state, slide: Slide | Slide[]) {
