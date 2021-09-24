@@ -7,6 +7,7 @@ import { SYS_FONTS } from '@/configs/font'
 interface Api{
   url: string;
   params: object;
+  responseName?: string;
   docDataName?: string;
 }
 

@@ -91,9 +91,12 @@ export const actions: ActionTree<State, State> = {
       commit(MutationTypes.SET_LOADING, true)
       // eslint-disable-next-line
       const res: any = await api.request.get(state.getDataApi.url, state.getDataApi.params)
+      const responseName = state.getDataApi.responseName
+      const docDataName = state.getDataApi.docDataName
       commit(MutationTypes.SET_LOADING, false)
       if (res.status === 200) {
-        const slides = res.data.detail
+        const response = responseName ? res[responseName] : res.data
+        const slides = docDataName ? response[docDataName] : response.detail
         if (slides && slides instanceof Array && slides.length) {
           commit(MutationTypes.SET_SLIDES, slides)
         }
