@@ -94,7 +94,7 @@ export const actions: ActionTree<State, State> = {
       const responseName = state.getDataApi.responseName
       const docDataName = state.getDataApi.docDataName
       commit(MutationTypes.SET_LOADING, false)
-      if (res.status === 200) {
+      if (res.msg === 'OK') {
         const response = responseName ? res[responseName] : res.data
         const slides = docDataName ? response[docDataName] : response.detail
         if (slides && slides instanceof Array && slides.length) {
@@ -114,7 +114,7 @@ export const actions: ActionTree<State, State> = {
       // eslint-disable-next-line
       const res: any = await api.request.patch(state.patchDataApi.url, {...state.patchDataApi.params, ...dataParam})
       commit(MutationTypes.SET_LOADING, false)
-      if (res.status === 200) {
+      if (res.msg === 'OK') {
         message.warning('保存成功')
       }
       else {
