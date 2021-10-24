@@ -26,9 +26,9 @@ export default defineComponent({
     const patchDataApi = computed(() => store.state.patchDataApi)
     const loading = computed(() => store.state.loading)
 
-    if (process.env.NODE_ENV === 'production') {
-      window.onbeforeunload = () => false
-    }
+    // if (process.env.NODE_ENV === 'production') {
+    //   window.onbeforeunload = () => false
+    // }
 
     onMounted(() => {
       store.commit(MutationTypes.SET_AVAILABLE_FONTS)

@@ -50,6 +50,7 @@
         </template>
         <IconWrite class="tool-btn" />
       </Popover>
+      <!-- <IconLogout class="tool-btn" @click="exitScreening()" /> -->
     </div>
 
     <div class="page-number" @click="slideThumbnailModelVisible = true" v-if="showPageNumber">
@@ -132,6 +133,7 @@ export default defineComponent({
     }
 
     onMounted(() => {
+      setSlideContentSize()
       window.addEventListener('resize', windowResizeListener)
     })
     onUnmounted(() => {
@@ -314,6 +316,7 @@ export default defineComponent({
       turnSlideToIndex,
       writingBoardToolVisible,
       showPageNumber,
+      // exitScreening
     }
   },
 })

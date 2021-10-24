@@ -71,7 +71,8 @@ import {
   Click,
   Theme,
   ArrowCircleLeft,
-  Save
+  Save,
+  Logout
 } from '@icon-park/vue-next'
 
 export default {
@@ -171,5 +172,6 @@ export default {
     app.component('IconTheme', Theme)
     app.component('IconArrowCircleLeft', ArrowCircleLeft)
     app.component('IconSave', Save)
+    app.component('IconLogout', Logout)
   }
 }
