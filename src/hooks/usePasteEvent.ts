@@ -3,19 +3,37 @@ import { useStore } from '@/store'
 import { getImageDataURL } from '@/utils/image'
 import usePasteTextClipboardData from './usePasteTextClipboardData'
 import useCreateElement from './useCreateElement'
+import api from '@/api'
+import qiniuUpload from '@/utils/qiniu'
+import { message } from 'ant-design-vue'
 
 export default () => {
   const store = useStore()
   const editorAreaFocus = computed(() => store.state.editorAreaFocus)
   const thumbnailsFocus = computed(() => store.state.thumbnailsFocus)
   const disableHotkeys = computed(() => store.state.disableHotkeys)
+  const getUptokenApi = computed(() => store.state.getUptokenApi)
 
   const { pasteTextClipboardData } = usePasteTextClipboardData()
   const { createImageElement } = useCreateElement()
 
   // 粘贴图片到幻灯片元素
-  const pasteImageFile = (imageFile: File) => {
-    getImageDataURL(imageFile).then(dataURL => createImageElement(dataURL))
+  const pasteImageFile = async (imageFile: File) => {
+    // getImageDataURL(imageFile).then(dataURL => createImageElement(dataURL))
+    if (!imageFile) return
+    if (getUptokenApi.value) {
+      // eslint-disable-next-line
+      const res: any = await api.request.get(getUptokenApi.value.url, {...getUptokenApi.value.params, ...{token: api.getToken()}})
+      if (res.statusCode === '200') {
+        const upToken = res.result
+        qiniuUpload(upToken, imageFile, function(url: string) {
+          createImageElement(url)
+        })
+      }
+      else {
+        message.warn('获取上传token失败！')
+      }
+    }
   }
 
   /**

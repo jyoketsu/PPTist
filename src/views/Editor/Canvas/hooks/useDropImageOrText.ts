@@ -2,15 +2,19 @@ import { computed, onMounted, onUnmounted, Ref } from 'vue'
 import { useStore } from '@/store'
 import { getImageDataURL } from '@/utils/image'
 import useCreateElement from '@/hooks/useCreateElement'
+import api from '@/api'
+import qiniuUpload from '@/utils/qiniu'
+import { message } from 'ant-design-vue'
 
 export default (elementRef: Ref<HTMLElement | undefined>) => {
   const store = useStore()
   const disableHotkeys = computed(() => store.state.disableHotkeys)
+  const getUptokenApi = computed(() => store.state.getUptokenApi)
 
   const { createImageElement, createTextElement } = useCreateElement()
 
   // 拖拽元素到画布中
-  const handleDrop = (e: DragEvent) => {
+  const handleDrop = async (e: DragEvent) => {
     if (!e.dataTransfer) return
     const dataTransferItem = e.dataTransfer.items[0]
 
@@ -18,7 +22,20 @@ export default (elementRef: Ref<HTMLElement | undefined>) => {
     if (dataTransferItem.kind === 'file' && dataTransferItem.type.indexOf('image') !== -1) {
       const imageFile = dataTransferItem.getAsFile()
       if (imageFile) {
-        getImageDataURL(imageFile).then(dataURL => createImageElement(dataURL))
+        // getImageDataURL(imageFile).then(dataURL => createImageElement(dataURL))
+        if (getUptokenApi.value) {
+          // eslint-disable-next-line
+          const res: any = await api.request.get(getUptokenApi.value.url, {...getUptokenApi.value.params, ...{token: api.getToken()}})
+          if (res.statusCode === '200') {
+            const upToken = res.result
+            qiniuUpload(upToken, imageFile, function(url: string) {
+              createImageElement(url)
+            })
+          }
+          else {
+            message.warn('获取上传token失败！')
+          }
+        }
       }
     }
     else if (dataTransferItem.kind === 'string' && dataTransferItem.type === 'text/plain') {
