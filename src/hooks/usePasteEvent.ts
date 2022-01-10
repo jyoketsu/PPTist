@@ -1,6 +1,6 @@
 import { computed, onMounted, onUnmounted } from 'vue'
 import { useStore } from '@/store'
-import { getImageDataURL } from '@/utils/image'
+// import { getImageDataURL } from '@/utils/image'
 import usePasteTextClipboardData from './usePasteTextClipboardData'
 import useCreateElement from './useCreateElement'
 import api from '@/api'
@@ -26,9 +26,8 @@ export default () => {
       const res: any = await api.request.get(getUptokenApi.value.url, {...getUptokenApi.value.params, ...{token: api.getToken()}})
       if (res.statusCode === '200') {
         const upToken = res.result
-        qiniuUpload(upToken, imageFile, function(url: string) {
-          createImageElement(url)
-        })
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        qiniuUpload(upToken, imageFile).then((url: any) => createImageElement(url)).catch((error) => message.warn(error.msg || '上传失败！'))
       }
       else {
         message.warn('获取上传token失败！')

@@ -1,6 +1,7 @@
 /* eslint-disable */
 
 import * as qiniu from "qiniu-js";
+import api from "../api";
 
 const guid = (len?: number, radix?: number) => {
   const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split(
@@ -33,7 +34,7 @@ const guid = (len?: number, radix?: number) => {
   return uuid.join("");
 };
 
-const qiniuUpload = (uptoken: string, file: any, callback: Function) => {
+const qiniuUpload = (uptoken: string, file: any) => {
   const putExtra = {
     // 文件原文件名
     fname: "",
@@ -50,30 +51,47 @@ const qiniuUpload = (uptoken: string, file: any, callback: Function) => {
     region: qiniu.region.z0,
   };
 
-  const observer = {
-    error(err: any) {
-      alert("上传失败！");
-    },
-    complete(res: any) {
-      const domain = "https://cdn-icare.qingtime.cn/";
-      const url = domain + encodeURIComponent(res.key);
-      callback(url);
-    },
-  };
+  return new Promise(async function(resolve, reject) {
+    try {
+      const observer = {
+        error(err: any) {
+          alert("上传失败！");
+        },
+        complete(res: any) {
+          const domain = "https://cdn-icare.qingtime.cn/";
+          const url:string = domain + encodeURIComponent(res.key);
+          api.qiniu.updateStorage([
+            {
+              url: url,
+              fileType: file.type,
+              fileSize: file.size,
+            },
+          ]);
+          resolve(url);
+        },
+      };
 
-  // 上传
-  const observable = qiniu.upload(
-    file,
-    `${guid(8, 16)}${
-      file.name ? file.name.substr(file.name.lastIndexOf(".")) : ".jpg"
-    }`,
-    uptoken,
-    putExtra,
-    qiniuConfig
-  );
-
-  // 上传开始
-  observable.subscribe(observer);
+      const res: any = await api.qiniu.remainingStorage(file.size);
+      if (res.status === 200) {
+        // 上传
+        const observable = qiniu.upload(
+          file,
+          `${guid(8, 16)}${
+            file.name ? file.name.substr(file.name.lastIndexOf(".")) : ".jpg"
+          }`,
+          uptoken,
+          putExtra,
+          qiniuConfig
+        );
+        // 上传开始
+        observable.subscribe(observer);
+      } else {
+        reject(res);
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
 };
 
 export default qiniuUpload;

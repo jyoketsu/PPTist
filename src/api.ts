@@ -1,4 +1,6 @@
 import axios from 'axios'
+import Resource from './types/Resource'
+const AUTH_URL = 'https://baokudata.qingtime.cn/sgbh'
 
 let token: string | null = null
 
@@ -85,8 +87,21 @@ const request = {
   },
 }
 
+const qiniu = {
+  remainingStorage(fileSize?: number) {
+    return request.get(AUTH_URL + '/qiniuResource/remainSize', { fileSize })
+  },
+  updateStorage(resourceArr: Resource[]) {
+    return request.post(AUTH_URL + '/qiniuResource', { resourceArr })
+  },
+  deleteQiniu(urls: string[]) {
+    return request.delete(AUTH_URL + '/qiniuResource', { urlArr: urls })
+  },
+}
+
 export default {
   request,
+  qiniu,
   setToken: (_token: string) => {
     token = _token
   },

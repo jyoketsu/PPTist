@@ -8,6 +8,7 @@ import { KEYS } from '@/configs/hotkey'
 import { message } from 'ant-design-vue'
 import usePasteTextClipboardData from '@/hooks/usePasteTextClipboardData'
 import useHistorySnapshot from '@/hooks/useHistorySnapshot'
+import api from '../api'
 
 export default () => {
   const store = useStore()
@@ -92,8 +93,32 @@ export default () => {
 
   // 删除当前页，若将删除全部页面，则执行重置幻灯片操作
   const deleteSlide = (targetSlidesId = selectedSlidesId.value) => {
-    if (slides.value.length === targetSlidesId.length) resetSlides()
-    else store.commit(MutationTypes.DELETE_SLIDE, targetSlidesId)
+    // 要删除的图片地址
+    const deleteSrcList: string[] = []
+    for (let index = 0; index < targetSlidesId.length; index++) {
+      const id = targetSlidesId[index]
+      const slide = slides.value.find((item) => item.id === id)
+      if (slide) {
+        for (let index = 0; index < slide.elements.length; index++) {
+          const element = slide.elements[index]
+          if (element.type === 'image') {
+            deleteSrcList.push(element.src)
+          }
+        }
+      }
+      
+    }
+    if (deleteSrcList.length) {
+      // 删除七牛资源
+      api.qiniu.deleteQiniu(deleteSrcList) 
+    }
+    if (slides.value.length === targetSlidesId.length) {
+      resetSlides()
+    }
+    else {     
+      store.commit(MutationTypes.DELETE_SLIDE, targetSlidesId)
+    }
+    
 
     store.commit(MutationTypes.UPDATE_SELECTED_SLIDES_INDEX, [])
 
