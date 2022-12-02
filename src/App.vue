@@ -70,4 +70,15 @@ export default defineComponent({
 #app {
   height: 100%;
 }
+
+@media screen and (max-width: 600px) {
+  #app {
+    transform: rotate(90deg);
+    transform-origin: bottom left;
+    position: absolute;
+    top: -100vw;
+    height: 100vw;
+    width: 100vh;
+  }
+}
 </style>
