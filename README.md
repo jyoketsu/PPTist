@@ -1,3 +1,50 @@
+# 时光演示
+本项目在[PPTist](https://github.com/pipipi-pikachu/PPTist)
+的基础上添加了数据存储，通过`query`参数传递`api`地址，以供不同的项目使用。
+### query参数
+```javascript
+/**
+ * 获取第三方应用地址
+ * @param nodeKey
+ * @returns
+ */
+export const getThirdAppUrl = (
+  nodeKey: string,
+  cardKey: string,
+  nodeType: Type,
+  appUrl: string,
+  editMode?: boolean
+) => {
+  const getDataApi = JSON.stringify({
+    url: `${API_URL}/appendix/detail`,
+    params: { nodeKey, cardKey, nodeType },
+    docDataName: "content",
+  });
+  const patchDataApi = JSON.stringify({
+    url: `${API_URL}/appendix/node`,
+    params: { nodeKey, type: "doc" },
+    docDataName: nodeType === "draw" ? ["content", "name"] : "content",
+  });
+  const getUptokenApi = JSON.stringify({
+    url: "https://baokudata.qingtime.cn/sgbh/upTokenQiniu/getQiNiuUpToken",
+    params: { token: "", type: 2 },
+  });
+  const token = localStorage.getItem("auth_token");
+  // isEdit 2:编辑模式 1:只读 0:预览
+  const query = `token=${token}&getDataApi=${encodeURIComponent(
+    getDataApi
+  )}&patchDataApi=${encodeURIComponent(
+    patchDataApi
+  )}&getUptokenApi=${encodeURIComponent(getUptokenApi)}&isEdit=${
+    editMode ? 2 : 0
+  }&hideHead=1`;
+  return `${appUrl}?${query}`;
+};
+
+// 示例地址
+http://localhost:8080/?token=KI7NZXCFKNK8GP4NTCCZBPQZSOH3KAAH9IAR9EJCFRLCG15A&getDataApi=%7B%22url%22%3A%22https%3A%2F%2Fnotesfoxx.qingtime.cn%2Fappendix%2Fdetail%22%2C%22params%22%3A%7B%22nodeKey%22%3A%2247E4ABFE%22%2C%22cardKey%22%3A%221432747408%22%2C%22nodeType%22%3A%22ppt%22%2C%22name%22%3A%22ppt%22%7D%2C%22docDataName%22%3A%22content%22%7D&patchDataApi=%7B%22url%22%3A%22https%3A%2F%2Fnotesfoxx.qingtime.cn%2Fappendix%2Fnode%22%2C%22params%22%3A%7B%22nodeKey%22%3A%2247E4ABFE%22%2C%22type%22%3A%22doc%22%2C%22name%22%3A%22ppt%22%7D%2C%22docDataName%22%3A%22content%22%7D&getUptokenApi=%7B%22url%22%3A%22https%3A%2F%2Fbaokudata.qingtime.cn%2Fsgbh%2FupTokenQiniu%2FgetQiNiuUpToken%22%2C%22params%22%3A%7B%22token%22%3A%22%22%2C%22type%22%3A2%7D%7D&isEdit=0&hideHead=1
+```
+# 原项目README
 <p align="center">
     <img src='/public/icons/android-chrome-192x192.png' />
 </p>

@@ -4,7 +4,9 @@
       <div class="history-item" :class="{ 'disable': !canUndo }" @click.stop="undo()"><IconBack /> 撤销</div>
       <div class="history-item" :class="{ 'disable': !canRedo }" @click.stop="redo()"><IconNext /> 重做</div>
     </div>
+    <div class="flex-space"/>
     <div class="back" @click="changeMode('preview')"><IconLogout /> 退出编辑</div>
+    <div class="save" @click="saveSlides()">保存</div>
   </div>
 </template>
 
@@ -14,6 +16,7 @@ import { storeToRefs } from 'pinia'
 import { useSnapshotStore } from '@/store'
 import { Mode } from '@/types/mobile'
 import useHistorySnapshot from '@/hooks/useHistorySnapshot'
+import useSlideHandler from '@/hooks/useSlideHandler'
 
 defineProps({
   changeMode: {
@@ -24,6 +27,7 @@ defineProps({
 
 const { canUndo, canRedo } = storeToRefs(useSnapshotStore())
 const { redo, undo } = useHistorySnapshot()
+const { saveSlides } = useSlideHandler()
 </script>
 
 <style lang="scss" scoped>
@@ -31,7 +35,6 @@ const { redo, undo } = useHistorySnapshot()
   height: 50px;
   background-color: #fff;
   display: flex;
-  justify-content: space-between;
   align-items: center;
   padding: 0 18px;
   font-size: 13px;
@@ -39,10 +42,17 @@ const { redo, undo } = useHistorySnapshot()
   position: relative;
   z-index: 2;
 }
+.flex-space {
+  flex: 1;
+}
 .history {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.save {
+  margin-left: 15px;
+  margin-bottom: 0.1px;
 }
 .history-item {
   margin-right: 20px;

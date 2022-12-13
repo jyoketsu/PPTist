@@ -150,6 +150,10 @@ export default () => {
     slidesStore.updateSlideIndex(newIndex)
   }
 
+  const saveSlides = () => {
+    slidesStore.saveSlides()
+  }
+
   return {
     resetSlides,
     updateSlideIndex,
@@ -162,5 +166,6 @@ export default () => {
     cutSlide,
     selectAllSlide,
     sortSlides,
+    saveSlides 
   }
 }

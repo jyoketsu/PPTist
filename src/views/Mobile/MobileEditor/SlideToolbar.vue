@@ -41,11 +41,13 @@ import { VIEWPORT_SIZE } from '@/configs/canvas'
 
 import MobileThumbnails from '../MobileThumbnails.vue'
 import FileInput from '@/components/FileInput.vue'
-import { Button } from 'ant-design-vue'
+import { Button, message } from 'ant-design-vue'
+import api from '@/api'
+import qiniuUpload from '@/utils/qiniu'
 const ButtonGroup = Button.Group
 
 const slidesStore = useSlidesStore()
-const { viewportRatio, currentSlide } = storeToRefs(slidesStore)
+const { viewportRatio, currentSlide, getUptokenApi } = storeToRefs(slidesStore)
 
 const { createSlide, copyAndPasteSlide, deleteSlide, } = useSlideHandler()
 const { createTextElement, createImageElement, createShapeElement } = useCreateElement()
@@ -62,9 +64,20 @@ const insertTextElement = () => {
   }, { content: '<p>新添加文本</p>' })
 }
 
-const insertImageElement = (files: FileList) => {
+const insertImageElement = async (files: FileList) => {
   if (!files || !files[0]) return
-  getImageDataURL(files[0]).then(dataURL => createImageElement(dataURL))
+  if (getUptokenApi.value) {
+    // eslint-disable-next-line
+    const res: any = await api.request.get(getUptokenApi.value.url, {...getUptokenApi.value.params, ...{token: api.getToken()}})
+    if (res.statusCode === '200') {
+      const upToken = res.result
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      qiniuUpload(upToken, files[0]).then((url: any) => createImageElement(url)).catch((error) => message.warn(error.msg || '上传失败！'))
+    }
+    else {
+      message.warn('获取上传token失败！')
+    }
+  }
 }
 
 const insertShapeElement = (type: 'square' | 'round') => {

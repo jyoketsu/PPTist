@@ -59,9 +59,7 @@
           <IconPpt size="19" fill="#666" style="margin-top: 1px;" />
         </div>
       </Tooltip>
-      <a href="https://github.com/pipipi-pikachu/PPTist" target="_blank">
-        <div class="menu-item"><IconGithub size="18" fill="#666" /></div>
-      </a>
+      <div class="menu-item" @click="saveSlides()"><span class="text">保存</span></div> 
     </div>
 
     <Drawer
@@ -99,7 +97,7 @@ const mainStore = useMainStore()
 const { gridLineSize, showRuler, showSelectPanel } = storeToRefs(mainStore)
 
 const { enterScreening, enterScreeningFromStart } = useScreening()
-const { createSlide, deleteSlide, resetSlides } = useSlideHandler()
+const { createSlide, deleteSlide, resetSlides, saveSlides } = useSlideHandler()
 const { redo, undo } = useHistorySnapshot()
 const { importSpecificFile } = useExport()
 

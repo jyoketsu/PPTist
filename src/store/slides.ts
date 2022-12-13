@@ -5,6 +5,8 @@ import { Slide, SlideTheme, PPTElement, PPTAnimation } from '@/types/slides'
 import { slides } from '@/mocks/slides'
 import { theme } from '@/mocks/theme'
 import { layouts } from '@/mocks/layout'
+import api from '@/api'
+import { message } from 'ant-design-vue'
 
 interface RemoveElementPropData {
   id: string
@@ -21,11 +23,22 @@ interface FormatedAnimation {
   autoNext: boolean
 }
 
+interface Api{
+  url: string;
+  params: any;
+  responseName?: string;
+  docDataName?: string;
+}
+
 export interface SlidesState {
   theme: SlideTheme
   slides: Slide[]
   slideIndex: number
   viewportRatio: number
+  getDataApi: Api|null;
+  patchDataApi: Api|null; 
+  getUptokenApi: Api|null;
+  loading: boolean;
 }
 
 export const useSlidesStore = defineStore('slides', {
@@ -34,6 +47,10 @@ export const useSlidesStore = defineStore('slides', {
     slides: slides, // 幻灯片页面数据
     slideIndex: 0, // 当前页面索引
     viewportRatio: 0.5625, // 可视区域比例，默认16:9
+    getDataApi: null,
+    patchDataApi: null,
+    getUptokenApi: null,
+    loading: false,
   }),
 
   getters: {
@@ -186,5 +203,48 @@ export const useSlidesStore = defineStore('slides', {
       })
       this.slides[slideIndex].elements = (elements as PPTElement[])
     },
+
+    async getSlidesByApi() {
+      if (this.getDataApi) {
+        this.loading = true
+        const res: any = await api.request.get(this.getDataApi.url, this.getDataApi.params)
+        this.loading = false
+        const responseName = this.getDataApi.responseName
+        const docDataName = this.getDataApi.docDataName
+        if (res.msg === 'OK') {
+          const response = responseName ? res[responseName] : res.data
+          const slides = docDataName ? response[docDataName] : response.detail
+          if (slides && slides instanceof Array && slides.length) {
+            this.slides = slides
+          }
+        }
+        else {
+          message.error(res.msg)
+        }
+      }
+    },
+
+    async saveSlides() {
+      if (this.patchDataApi && this.patchDataApi.docDataName) {
+        const dataParam = {}
+        dataParam[this.patchDataApi.docDataName] = this.slides
+        this.loading = true
+        const res: any = await api.request.patch(this.patchDataApi.url, {...this.patchDataApi.params, ...dataParam})
+        this.loading = false
+        if (res.msg === 'OK') {
+          message.success('保存成功')
+        }
+        else {
+          message.warning(res.msg)
+        }
+      }
+    },
+
+    setApi(data: any) {
+      this.getDataApi = data.getDataApi
+      this.patchDataApi = data.patchDataApi
+      this.getUptokenApi = data.getUptokenApi
+      api.setToken(data.token)
+    }
   },
 })
