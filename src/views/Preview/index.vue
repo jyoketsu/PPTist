@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, onBeforeUnmount } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useMainStore, useSlidesStore } from '@/store'
 import useGlobalHotkey from '@/hooks/useGlobalHotkey'
@@ -36,9 +36,18 @@ const { enterScreening } = useScreening()
 const containerRef = ref<HTMLElement>()
 const screenWidth = ref(0)
 
-onMounted(() => {
+const handleResize = () => {
   if (!containerRef.value) return
-  screenWidth.value = containerRef.value.clientWidth
+  screenWidth.value = containerRef.value.clientWidth 
+}
+
+onMounted(() => {
+  window.addEventListener('resize', handleResize)
+  handleResize()
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', handleResize)
 })
 
 useGlobalHotkey()
