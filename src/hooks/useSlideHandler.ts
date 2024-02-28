@@ -154,6 +154,14 @@ export default () => {
     slidesStore.saveSlides()
   }
 
+  const handleChange = () => {
+    slidesStore.handleChange()
+  }
+
+  const toEdit = () => {
+    slidesStore.toEdit()
+  }
+
   return {
     resetSlides,
     updateSlideIndex,
@@ -166,6 +174,8 @@ export default () => {
     cutSlide,
     selectAllSlide,
     sortSlides,
-    saveSlides 
+    saveSlides,
+    handleChange,
+    toEdit,
   }
 }

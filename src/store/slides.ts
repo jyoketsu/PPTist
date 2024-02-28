@@ -8,6 +8,11 @@ import { layouts } from '@/mocks/layout'
 import api from '@/api'
 import { message } from 'ant-design-vue'
 
+const getSearchParamValue = (search: string, paramName: string) => {
+  const QUERY_PARAMS = new URLSearchParams(search)
+  return QUERY_PARAMS.get(paramName)
+}
+
 interface RemoveElementPropData {
   id: string
   propName: string | string[]
@@ -39,6 +44,8 @@ export interface SlidesState {
   patchDataApi: Api|null; 
   getUptokenApi: Api|null;
   loading: boolean;
+  changed: boolean;
+  isEdit:boolean;
 }
 
 export const useSlidesStore = defineStore('slides', {
@@ -51,6 +58,8 @@ export const useSlidesStore = defineStore('slides', {
     patchDataApi: null,
     getUptokenApi: null,
     loading: false,
+    changed: false,
+    isEdit: getSearchParamValue(location.search, 'isEdit') === '2' ? true : false
   }),
 
   getters: {
@@ -224,15 +233,24 @@ export const useSlidesStore = defineStore('slides', {
       }
     },
 
+    handleChange() {
+      this.changed = true
+    },
+    
+    toEdit() {
+      this.isEdit = true
+    },
+
     async saveSlides() {
       if (this.patchDataApi && this.patchDataApi.docDataName) {
         const dataParam = {}
         dataParam[this.patchDataApi.docDataName] = this.slides
-        this.loading = true
+        // this.loading = true
         const res: any = await api.request.patch(this.patchDataApi.url, {...this.patchDataApi.params, ...dataParam})
-        this.loading = false
+        // this.loading = false
+        this.changed = false
         if (res.msg === 'OK') {
-          message.success('保存成功')
+          // message.success('保存成功')
         }
         else {
           message.warning(res.msg)

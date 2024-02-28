@@ -6,14 +6,15 @@
     </div>
     <div class="flex-space"/>
     <div class="back" @click="changeMode('preview')"><IconLogout /> 退出编辑</div>
-    <div class="save" @click="saveSlides()">保存</div>
+    <!-- <div class="save" @click="saveSlides()">保存</div> -->
+    <div class="save">{{ changed?'有更改':'已保存' }}</div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { PropType } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useSnapshotStore } from '@/store'
+import { useSlidesStore, useSnapshotStore } from '@/store'
 import { Mode } from '@/types/mobile'
 import useHistorySnapshot from '@/hooks/useHistorySnapshot'
 import useSlideHandler from '@/hooks/useSlideHandler'
@@ -25,6 +26,8 @@ defineProps({
   },
 })
 
+const slidesStore = useSlidesStore()
+const { changed } = storeToRefs(slidesStore)
 const { canUndo, canRedo } = storeToRefs(useSnapshotStore())
 const { redo, undo } = useHistorySnapshot()
 const { saveSlides } = useSlideHandler()

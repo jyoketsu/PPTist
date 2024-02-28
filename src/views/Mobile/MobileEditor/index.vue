@@ -40,7 +40,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, PropType, ref, watchEffect } from 'vue'
+import { computed, onMounted, PropType, ref, watch, watchEffect } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useMainStore, useSlidesStore } from '@/store'
 import { PPTElement } from '@/types/slides'
@@ -57,6 +57,10 @@ import MobileOperate from './MobileOperate.vue'
 import SlideToolbar from './SlideToolbar.vue'
 import ElementToolbar from './ElementToolbar.vue'
 import Header from './Header.vue'
+import useSlideHandler from '@/hooks/useSlideHandler'
+
+let timeout:number
+let initCount = 0
 
 defineProps({
   changeMode: {
@@ -69,6 +73,7 @@ const slidesStore = useSlidesStore()
 const mainStore = useMainStore()
 const { slideIndex, currentSlide, viewportRatio } = storeToRefs(slidesStore)
 const { activeElementIdList, handleElement } = storeToRefs(mainStore)
+const { saveSlides, handleChange } = useSlideHandler()
 
 const contentRef = ref<HTMLElement>()
 
@@ -102,6 +107,17 @@ const setLocalElementList = () => {
   elementList.value = currentSlide.value ? JSON.parse(JSON.stringify(currentSlide.value.elements)) : []
 }
 watchEffect(setLocalElementList)
+
+watch(elementList, (newVal) => {
+  if (initCount > 2) {
+    clearTimeout(timeout)
+    handleChange() 
+    timeout = setTimeout(() => {
+      saveSlides()
+    }, 2000)
+  }
+  initCount++
+})
 
 const { dragElement } = useDragElement(elementList, alignmentLines, canvasScale)
 const { scaleElement } = useScaleElement(elementList, alignmentLines, canvasScale)

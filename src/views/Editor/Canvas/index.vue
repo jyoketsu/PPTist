@@ -135,6 +135,9 @@ import Operate from './Operate/index.vue'
 import LinkDialog from './LinkDialog.vue'
 import { Modal } from 'ant-design-vue'
 
+let timeout:number
+let initCount = 0
+
 const mainStore = useMainStore()
 const {
   activeElementIdList,
@@ -151,6 +154,7 @@ const {
 } = storeToRefs(mainStore)
 const { currentSlide } = storeToRefs(useSlidesStore())
 const { ctrlKeyState, spaceKeyState } = storeToRefs(useKeyboardStore())
+const { updateSlideIndex, saveSlides, handleChange } = useSlideHandler()
 
 const viewportRef = ref<HTMLElement>()
 const alignmentLines = ref<AlignmentLineProps[]>([])
@@ -167,6 +171,17 @@ const setLocalElementList = () => {
   elementList.value = currentSlide.value ? JSON.parse(JSON.stringify(currentSlide.value.elements)) : []
 }
 watchEffect(setLocalElementList)
+
+watch(elementList, (newVal) => {
+  if (initCount > 2) {
+    clearTimeout(timeout)
+    handleChange() 
+    timeout = setTimeout(() => {
+      saveSlides()
+    }, 2000)
+  }
+  initCount++
+})
 
 const canvasRef = ref<HTMLElement>()
 const { dragViewport, viewportStyles } = useViewportSize(canvasRef)
@@ -186,7 +201,6 @@ const { selectAllElement } = useSelectAllElement()
 const { deleteAllElements } = useDeleteElement()
 const { pasteElement } = useCopyAndPasteElement()
 const { enterScreeningFromStart } = useScreening()
-const { updateSlideIndex } = useSlideHandler()
 
 // 组件渲染时，如果存在元素焦点，需要清除
 // 这种情况存在于：有焦点元素的情况下进入了放映模式，再退出时，需要清除原先的焦点（因为可能已经切换了页面）

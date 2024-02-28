@@ -59,7 +59,8 @@
           <IconPpt size="19" fill="#666" style="margin-top: 1px;" />
         </div>
       </Tooltip>
-      <div class="menu-item" @click="saveSlides()"><span class="text">保存</span></div> 
+      <!-- <div class="menu-item" @click="saveSlides()"><span class="text">保存</span></div>  -->
+      <div class="save">{{ changed?'有更改':'已保存' }}</div>
     </div>
 
     <Drawer
@@ -77,7 +78,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useMainStore } from '@/store'
+import { useMainStore, useSlidesStore } from '@/store'
 import useScreening from '@/hooks/useScreening'
 import useSlideHandler from '@/hooks/useSlideHandler'
 import useHistorySnapshot from '@/hooks/useHistorySnapshot'
@@ -95,6 +96,8 @@ const MenuItem = Menu.Item
 
 const mainStore = useMainStore()
 const { gridLineSize, showRuler, showSelectPanel } = storeToRefs(mainStore)
+const slidesStore = useSlidesStore()
+const { changed } = storeToRefs(slidesStore)
 
 const { enterScreening, enterScreeningFromStart } = useScreening()
 const { createSlide, deleteSlide, resetSlides, saveSlides } = useSlideHandler()

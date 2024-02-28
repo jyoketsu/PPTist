@@ -1,6 +1,7 @@
 <template>
   <Screen v-if="screening" />
-  <Editor v-else-if="_isPC" />
+  <Editor v-else-if="_isPC && isEdit" />
+  <Preview v-else-if="_isPC && !isEdit" />
   <Mobile v-else />
   <Loading v-if="loading" />
 </template>
@@ -17,6 +18,7 @@ import Editor from './views/Editor/index.vue'
 import Screen from './views/Screen/index.vue'
 import Mobile from './views/Mobile/index.vue'
 import Loading from '@/components/Loading.vue'
+import Preview from './views/Preview/index.vue'
 
 const _isPC = isPC()
 
@@ -25,7 +27,7 @@ const snapshotStore = useSnapshotStore()
 const { databaseId } = storeToRefs(mainStore)
 const { screening } = storeToRefs(useScreenStore())
 const slidesStore = useSlidesStore()
-const { getDataApi, patchDataApi, loading } = storeToRefs(slidesStore)
+const { getDataApi, patchDataApi, loading, isEdit } = storeToRefs(slidesStore)
 
 if (process.env.NODE_ENV === 'production') {
   window.onbeforeunload = () => false
