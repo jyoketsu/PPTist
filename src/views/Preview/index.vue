@@ -41,13 +41,22 @@ const handleResize = () => {
   screenWidth.value = containerRef.value.clientWidth 
 }
 
+const handle2Edit = (e:MessageEvent) => {
+  if (e.data.eventName === 'switch2edit') {
+    toEdit()
+  }
+}
+
 onMounted(() => {
   window.addEventListener('resize', handleResize)
+  handleResize()
+  window.addEventListener('message', handle2Edit)
   handleResize()
 })
 
 onBeforeUnmount(() => {
   window.removeEventListener('resize', handleResize)
+  window.removeEventListener('message', handle2Edit)
 })
 
 useGlobalHotkey()
